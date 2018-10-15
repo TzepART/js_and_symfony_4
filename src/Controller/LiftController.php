@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\RepLog;
+use App\Entity\User;
 use App\Form\Type\RepLogType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ class LiftController extends BaseController
         $form = $this->createForm(RepLogType::class);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $repLog = $form->getData();
             $repLog->setUser($this->getUser());
@@ -63,7 +64,7 @@ class LiftController extends BaseController
             ->getLeaderboardDetails()
         ;
 
-        $userRepo = $this->getDoctrine()->getRepository('AppBundle:User');
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
         $leaderboard = array();
         foreach ($leaderboardDetails as $details) {
             if (!$user = $userRepo->find($details['user_id'])) {
